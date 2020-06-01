@@ -1,10 +1,10 @@
-let x = 1
-let obj = {
-  valueOf: () => {
-    return {}
-  },
-  toString: () => {
-    return {}
-  }
-}
-console.log(obj == 0, x)
+Promise.resolve().then(() => {
+  console.log('mm')
+  Promise.resolve().then(() => {
+    console.log('xx')
+  }).then(() => {
+    console.log('yy')
+  });
+}).then(() => {
+  console.log('nn')
+})
