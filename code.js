@@ -46,5 +46,4 @@ let user1 = () => {
   const result = validator.check()
   return result
 }
-
 console.log(user1())
