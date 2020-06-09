@@ -87,3 +87,5 @@ Promise.resolve().then(() => {
 - 执行微队列，输出xx，碰到内部.then加入队列尾部
 - 输出nn
 - 输出yy
+
+参考：[带你彻底弄懂Event Loop](https://segmentfault.com/a/1190000022805585)
