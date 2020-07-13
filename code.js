@@ -1,75 +1,51 @@
-class PubSub {
-  constructor() {
-    this.handleBars = {}; // 保存监听事件
-  }
-  // 订阅
-  subscribe(eventName, handle) {
-    try {
-      if (!this.handleBars.hasOwnProperty(eventName)) {
-        this.handleBars[eventName] = [];
-      }
-      if (typeof handle == 'function') {
-        this.handleBars[eventName].push(handle);
-      } else {
-        throw new Error(`你需要给${eventName}事件添加回调方法`);
-      }
-    } catch (error) {
-      console.warn(error);
-    }
-  }
-  // 发布
-  publish(eventName, ...arg) {
-    try {
-      if (this.handleBars.hasOwnProperty(eventName)) {
-        this.handleBars[eventName].map(item => {
-          item.apply(null, arg)
-        })
-      } else {
-        throw new Error(`${eventName}事件未被注册`);
-      }
-    } catch (error) {
-      console.warn(error);
-    }
-  }
-  // 移除订阅
-  unSubscribe(eventName, handle) {
-    try {
-      if (this.handleBars.hasOwnProperty(eventName)) {
-        this.handleBars[eventName].map((item, index) => {
-          if (item === handle) {
-            this.handleBars[eventName].splice(index, 1)
-          }
-        })
-      }
-    } catch (error) {
-      console.warn(error);
-    }
-  }
+function filterParams(obj) { // 剔除对象的空属性
+  var _newObj = {};
+  for (var key in obj) {
+      if (obj.hasOwnProperty(key)) { // 判断对象中是否有这个属性
+          if (isEmpty(obj[key])) continue;
+          _newObj[key] = typeof obj[key] === 'object' ? (
+              obj[key] instanceof Array ? ArrayFilterParams(obj[key]) : filterParams(obj[key])
+          ): obj[key];
+          
+      }
+  }
+  return _newObj;
 }
-
-// 实例化
-const sub = new PubSub();
-
-// 订阅的回调方法
-function func1(type) {
-  console.log('尼古拉斯赵四:', type);
+function ArrayFilterParams(arr) { // 剔除数组中的空值
+  var err = [];
+  const empty_arr = ['', undefined, null];
+  arr.forEach((item, index) => {
+      if (isEmpty(item)) return;
+      err.push(
+          typeof item === 'object' ? (
+              item instanceof Array ? ArrayFilterParams(item) :  filterParams(item)
+          ) : item
+      );
+  })
+  return err;
 }
-function func2(type) {
-  console.log('王凯旋:', type);
+function isEmpty(obj) { // 为空情况
+  const empty_arr = ['', undefined, null];
+  return (empty_arr.indexOf(obj) > -1 || obj.toString().trim() === '');
 }
-function func3(type) {
-  console.log('职业法师:', type);
+let info = {
+  name: '111',
+  age: null,
+  sex: undefined,
+  aa: '',
+  infoo: [
+      1, 23,5434,null,22, {
+          nale: '',
+          ss: '111'
+      }
+  ],
+  cc: {
+      asas: [
+          1,2,23,333
+      ],
+      name: '',
+      asss: undefined,
+      aaa:null
+  }
 }
-// 订阅事件
-sub.subscribe('微信', func1)
-sub.subscribe('微信', func2)
-sub.subscribe('QQ', func3)
-  
-setTimeout(() => {
-  // 触发订阅事件
-  sub.publish('微信', '公众号推文')
-  sub.publish('QQ', '动态更新', '666')
-  // 移除订阅的ready事件func1回调
-  sub.unSubscribe('微信', func1);
-  console.log(sub.handleBars);
-}, 1000)
+console.log(filterParams(info));
