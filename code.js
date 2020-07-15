@@ -12,3 +12,8 @@ console.log(test.replace(/-\w/g, ($0) => {
 var str3 = 'getElementById'
 
 console.log(str3.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase())
+
+
+var str4 = 'colouuuuur color'
+
+console.log(str4.match(/colou+r/g))
