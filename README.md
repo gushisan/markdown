@@ -25,3 +25,4 @@
 - [百度地图换高德地图中遇到的坑](work-notes/百度地图换高德中遇到的坑.md)
 - [微信相关流程整理](work-notes/微信相关开发流程汇总.md)
 - [复习正则](work-notes/正则.md)
+- [vue路由守卫](work-notes/vue路由守卫.md)
