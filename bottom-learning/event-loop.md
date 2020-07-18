@@ -17,7 +17,7 @@
 - MutationObserver
 - process.nextTick (Node)
 
-![](http://www.gushisan.cn/def.png)
+![](https://user-gold-cdn.xitu.io/2020/7/18/1735ff727a18d3a9?w=730&h=773&f=png&s=61128)
 
 ## 代码执行步骤
 
