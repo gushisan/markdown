@@ -11,11 +11,11 @@
 // }))
 // console.log(test.match(/-\w/g))
 
-var str3 = 'getElementById'
+var str3 = '12312312311232'
 
-console.log(str3.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase())
-console.log(str3.match(/[a-z][A-Z]/g))
+// console.log(str3.replace(/(\d{10}|\d{14})/g, '$1-$2').toLowerCase())
+console.log(str3.match(/^(\d{13}|\d{10})$/g))
 
 
-var str4 = 'scq000 scq001'
-console.log(str4.replace(/(scq00)(?:0)/, '$1,$2'))
+// var str4 = 'scq000 scq001'
+// console.log(str4.replace(/(scq00)(?:0)/, '$1,$2'))
