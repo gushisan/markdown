@@ -27,3 +27,4 @@
 - [复习正则](work-notes/正则.md)
 - [vue路由守卫](work-notes/vue路由守卫.md)
 - [app.vue中获取不到正确的路由？](work-notes/appVue.md)
+- [vue项目迁移中遇到的坑](work-notes/vue项目迁移中遇到的坑.md)
