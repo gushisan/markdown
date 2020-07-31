@@ -1,4 +1,4 @@
-# 大前端学习笔记（持续更新）
+# 学习笔记（持续更新）
 
 > 验证你是否真正掌握一个知识的最好方法，就是看你能否用直白浅显的语言把复杂深奥的问题和知识讲清楚<p align="right">-- 费曼技巧「以教为学」</p> 
 
@@ -28,3 +28,6 @@
 - [vue路由守卫](work-notes/vue路由守卫.md)
 - [app.vue中获取不到正确的路由？](work-notes/appVue.md)
 - [vue项目迁移中遇到的坑](work-notes/vue项目迁移中遇到的坑.md)
+
+### 人生不止有技术
+- [理财](to-try-to-change-to-succeed/理财.md)
