@@ -13,10 +13,10 @@
   - 责任链模式（todo）
 
 ### 底层基础学习
-- [`❤️你可能不知道的冷知识`](./bottom-learning/你可能不知道的冷知识.md)
+- [`❤️前端基础知识积累`](./bottom-learning/你可能不知道的冷知识.md)
   - 0.1+0.2 为什么不等于 0.3 
   - == 和 === 的区别
-  - NAN 为什么不等于 NAN（todo）
+  -   ...
 - [`❤️浏览器相关知识`](./bottom-learning/浏览器相关知识.md)
   - 浏览器 HTTP 的缓存机制
 - [`❤️Event Loop`](./bottom-learning/event-loop.md)
