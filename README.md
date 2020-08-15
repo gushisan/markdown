@@ -21,6 +21,9 @@
   - 浏览器 HTTP 的缓存机制
 - [`❤️Event Loop`](./bottom-learning/event-loop.md)
   - Event Loop
+
+### 进阶
+- [函数式编程](advanced/函数式编程.md)
 ### 工作笔记
 - [百度地图换高德地图中遇到的坑](work-notes/百度地图换高德中遇到的坑.md)
 - [微信相关流程整理](work-notes/微信相关开发流程汇总.md)
