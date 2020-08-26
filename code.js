@@ -1,8 +1,14 @@
-const compose = (f, g) => (x => f(g(x)));
+function fn(a) {
+  console.log(a)
+  var a = 123
+  console.log(a)
+  function a() {}
+  console.log(a)
+  console.log(b)
+  console.log(d)
+  var b = function() {}
+  console.log(b)
+  function d() {}
+}
 
-var toUpperCase = word => word.toUpperCase();
-
-var split = x => (str => str.split(x));
-
-var f = compose(split(' '), toUpperCase);
-console.log(f("abcd aaa"));
+fn(1)
