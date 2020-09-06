@@ -28,6 +28,7 @@
 
 ### 进阶
 - [函数式编程](advanced/函数式编程.md)
+- [前端领域驱动设计（DDD）demo](https://github.com/gushisan/xf-ts-ddd)
 ### 工作笔记
 - [百度地图换高德地图中遇到的坑](work-notes/百度地图换高德中遇到的坑.md)
 - [微信相关流程整理](work-notes/微信相关开发流程汇总.md)
