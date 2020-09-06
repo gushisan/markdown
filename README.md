@@ -21,7 +21,10 @@
   - 浏览器 HTTP 的缓存机制
 - [`❤️Event Loop`](./bottom-learning/event-loop.md)
   - Event Loop
-- [`js基础巩固（es5）`](./bottom-learning/ES5.md)
+- [`js基础`](./bottom-learning/ES5.md)
+  - 预编译
+  - 手写bind
+- [`js基础题`]()
 
 ### 进阶
 - [函数式编程](advanced/函数式编程.md)
