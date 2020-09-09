@@ -62,6 +62,8 @@ new(test.init())();
 解析：
 
 1. 同上，箭头函数没有自己的this，故指向window，输出20
-2. 注意这里p()执行时， `this.a = 60` 其实是将window上的a改为了60
+2. 注意这里p()执行时， `this.a = 60` 其实是将window上的a改为了60,这里的this其实是等于window的，故输出window.a是60
+3. 这里再去执行init，输出this.a ，去window上找，输出60
+4. 此时实例化过后的go，本身的属性上a=60，`__proto__` 上a=50，优先找自身上的属性，故输出60
 
 
