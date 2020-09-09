@@ -24,7 +24,8 @@
 - [`js基础`](./bottom-learning/ES5.md)
   - 预编译
   - 手写bind
-- [`js基础题`]()
+  - 手写深拷贝
+- [`js基础题`](./bottom-learning/js基础题.md)
 
 ### 进阶
 - [函数式编程](advanced/函数式编程.md)
