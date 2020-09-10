@@ -171,5 +171,21 @@ for (var i = 0; i < list_li.length; i++) {
 }
 ```
 
+## 写出输出值，并解释为什么
+```js
+function test(m) {
+	m = {
+		v: 5
+	}
+}
+var m = {
+	k: 30
+};
+
+test(m);
+alert(m.v);
+// undefined
+```
+
 
 
