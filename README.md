@@ -40,6 +40,7 @@
 - [vue路由守卫](work-notes/vue路由守卫.md)
 - [app.vue中获取不到正确的路由？](work-notes/appVue.md)
 - [vue项目迁移中遇到的坑](work-notes/vue项目迁移中遇到的坑.md)
+- [使用Dijkstra算法实现最短路线规划](work-notes/使用Dijkstra算法实现最短路线规划.md)
 
 ### 人生不止有技术
 - [理财](to-try-to-change-to-succeed/理财.md)
