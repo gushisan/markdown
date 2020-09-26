@@ -35,11 +35,8 @@
 - [前端领域驱动设计（DDD）demo](https://github.com/gushisan/xf-ts-ddd)
 ### 工作笔记
 - [百度地图换高德地图中遇到的坑](work-notes/百度地图换高德中遇到的坑.md)
-- [微信相关流程整理](work-notes/微信相关开发流程汇总.md)
 - [复习正则](work-notes/正则.md)
 - [vue路由守卫](work-notes/vue路由守卫.md)
-- [app.vue中获取不到正确的路由？](work-notes/appVue.md)
-- [vue项目迁移中遇到的坑](work-notes/vue项目迁移中遇到的坑.md)
 - [使用Dijkstra算法实现最短路线规划](work-notes/使用Dijkstra算法实现最短路线规划.md)
 
 ### 人生不止有技术
