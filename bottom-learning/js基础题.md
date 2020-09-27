@@ -237,6 +237,47 @@ function yd() {
 
     yd();
 })();
+
+// yd is not a function
+```
+立即执行函数内部，yd函数声明被提升，但是函数体未被提升出来，这里立即执行函数内部yd为undefined
+
+函数体在if中无法被提升，且if内的内容在执行时也未执行，故输出`yd is not a function`
+
+## 5、 请用一句话算出0-100之间学生的学生等级，如90-100为一等生、80-90为二等生，以此类推。
+
+```js
+10 - parseInt(分数/10);
 ```
 
+## 6、请用一句话遍历变量a。禁止使用for, 已知var a = "abc";
+```js
+var a = "abc";
+// 请用一句话遍历变量a，禁止使用for。
 
+// 解法一:
+console.log(...new Set(a));
+
+// 解法二:
+console.log(Array.from(a));
+
+// 解法三:
+console.log(Array.prototype.slice.call(a));
+```
+
+## 7、写出如下代码执行结果，并解释为什么
+
+```js
+var length = 10; 
+function fn() { 
+	console.log(this.length); 
+} 
+var yd = { 
+	length: 5, 
+	method: function(fn) { 
+		fn(); 
+		arguments[0](); 
+	} 
+}; 
+yd.method(fn, 1);
+```
