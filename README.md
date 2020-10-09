@@ -23,9 +23,8 @@
   - Event Loop
 - [`js基础`](./bottom-learning/ES5.md)
   - 预编译
-  - 手写bind
-  - 手写深拷贝
 - [`js基础题`](./bottom-learning/js基础题.md)
+- [`js手撕系列`](./bottom-learning/js手撕系列.md)
 - [`flutter 异步编程`](./bottom-learning/flutter异步编程.md)
   - 事件循环、Isolate
   - Stream（流）
