@@ -101,7 +101,7 @@ const unique4 = arr => {
 }
 ```
 
-## 类数组转化为数组
+## 3.类数组转化为数组
 类数组是具有length属性，但不具有数组原型上的方法。常见的类数组有arguments、DOM操作方法返回的结果。
 
 ### 方法1：Array.from
@@ -111,11 +111,17 @@ Array.from(document.querySelectorAll('div'))
 ```
 
 ### 方法2：Array.prototype.slice.call()
+`Array.prototype.slice.call()`能将具有length属性的对象转成数组
+
+类数组不是真的数组，没有数组上的方法，直接调用slice会报错
+
+调用原型上的slice方法会将类数组转为数组，在进行截取操作
 ```js
 Array.prototype.slice.call(document.querySelectorAll('div'))
 ```
 
 ### 方法3：...运算符
+es6 ...运算符可直接展开
 ```js
 [...document.querySelectorAll('div')]
 ```
@@ -123,4 +129,32 @@ Array.prototype.slice.call(document.querySelectorAll('div'))
 ### 方法4：利用concat
 ```js
 Array.prototype.concat.apply([], document.querySelectorAll('div'));
+```
+
+## 4.Array.prototype.filter()
+![](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/804ee51d522746c3b219548d038413c2~tplv-k3u1fbpfcp-zoom-1.image)
+```js
+Array.prototype.filter = function(callback, thisArg) {
+  if (this == undefined) {
+    throw new TypeError('this is null or not undefined');
+  }
+  if (typeof callback !== 'function') {
+    throw new TypeError(callback + 'is not a function');
+  }
+  const res = [];
+  // 让O成为回调函数的对象传递（强制转换对象）
+  const O = Object(this);
+  // >>>0 保证len为number，且为正整数
+  const len = O.length >>> 0;
+  for (let i = 0; i < len; i++) {
+    // 检查i是否在O的属性（会检查原型链）
+    if (i in O) {
+      // 回调函数调用传参
+      if (callback.call(thisArg, O[i], i, O)) {
+        res.push(O[i]);
+      }
+    }
+  }
+  return res;
+}
 ```
