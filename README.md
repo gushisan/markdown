@@ -37,6 +37,8 @@
 - [复习正则](work-notes/正则.md)
 - [vue路由守卫](work-notes/vue路由守卫.md)
 - [使用Dijkstra算法实现最短路线规划](work-notes/使用Dijkstra算法实现最短路线规划.md)
+### Flutter
+- [flutter路由详解](flutter/路由详解.md)
 
 ### 人生不止有技术
 - [理财](to-try-to-change-to-succeed/理财.md)
