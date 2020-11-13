@@ -289,3 +289,51 @@ Function.prototype.bind = function(context, ...args) {
   }
 }
 ```
+
+## 11.debounce（防抖）
+触发高频时间后n秒内函数只会执行一次,如果n秒内高频时间再次触发,则重新计算时间。
+```js
+const debounce = (fn, time) => {
+  let timeout = null;
+  return function() {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      fn.apply(this, arguments);
+    }, time);
+  }
+};
+```
+防抖常应用于用户进行搜索输入节约请求资源，window触发resize事件时进行防抖只触发一次
+
+## 12.throttle（节流）
+```js
+const throttle = (fn, time) => {
+  let flag = true;
+  return function() {
+    if (!flag) return;
+    flag = false;
+    setTimeout(() => {
+      fn.apply(this, arguments);
+      flag = true;
+    }, time);
+  }
+}
+```
+高频时间触发,但n秒内只会执行一次,所以节流会稀释函数的执行频率。
+
+## 13.函数柯里化
+```js
+function add() {
+  const _args = [...arguments];
+  function fn() {
+    _args.push(...arguments);
+    return fn;
+  }
+  fn.toString = function() {
+    return _args.reduce((sum, cur) => sum + cur);
+  }
+  return fn;
+}
+```
+经典面试题：实现add(1)(2)(3)(4)=10; 、 add(1)(1,2,3)(2)=9;
+
