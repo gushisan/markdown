@@ -280,4 +280,103 @@ var yd = {
 	} 
 }; 
 yd.method(fn, 1);
+// undefined 2
+// this指向问题
+```
+
+## 8.输出值是什么，为什么
+```js
+console.log(a);
+console.log(typeof yideng(a));
+
+var flag = true;
+
+if (!flag) {
+  var a = 1;
+}
+
+if (flag) {
+  function yideng(a) {
+    yideng = a;
+    console.log("yideng1");
+  }
+} else {
+  function yideng(a) {
+    yideng = a;
+    console.log("yideng2");
+  }
+}
+// undefined
+// yideng is not a function
+// 预编译 if里面函数声明无法提升
+```
+
+## 9.请写出如下输出值，并完成附加题的作答
+```js
+function fn(){
+  console.log(this.length);
+}
+
+var yideng = {
+  length:5,
+  method:function() {
+    "use strict";
+    fn();
+    arguments[0]()
+  }
+}
+const result = yideng.method.bind(null);
+result(fn,1);
+// 0 2
+// this指向问题 this软绑硬绑 严格模式
+
+```
+```js
+// 软绑硬绑解释
+
+// 软绑
+function fn(){
+  console.log(this.length);
+}
+
+const res = fn.bind(null)
+res();
+// 0 this 指向window
+
+// 硬绑
+function fn(){
+  console.log(this.length);
+}
+
+const res = fn.bind({})
+res();
+// undefined this 指向{}
+```
+也就是说this绑定null不生效
+
+附加题
+```js
+function yideng(a,b,c){
+  console.log(this.length); 
+  console.log(this.callee.length); 
+}
+
+function fn(d){
+  arguments[0](10,20,30,40,50);
+}
+
+fn(yideng,10,20,30);
+// 4 1
+// this指向问题 this指向fn的arguments，arguments.callee指向当前arguments指向的函数，this.callee => fn , length就是形参的个数
+```
+
+10.请问变量a会被GC回收么，为什么呢？
+```js
+function test(){
+  var a = "yideng";
+  return function(){
+    eval("");
+  }
+}
+test()();
 ```
