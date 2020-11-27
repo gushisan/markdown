@@ -280,7 +280,7 @@ var yd = {
 	} 
 }; 
 yd.method(fn, 1);
-// undefined 2
+// 10 2
 // this指向问题
 ```
 
