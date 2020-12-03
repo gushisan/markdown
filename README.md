@@ -41,6 +41,7 @@
 - [使用Dijkstra算法实现最短路线规划](work-notes/使用Dijkstra算法实现最短路线规划.md)
 ### Flutter
 - [flutter路由详解](flutter/路由详解.md)
+- [flutter安装包瘦身、加快启动速度](flutter/安装包瘦身、加快启动速度.md)
 
 ### 人生不止有技术
 - [理财](to-try-to-change-to-succeed/理财.md)
