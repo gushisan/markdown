@@ -30,6 +30,7 @@
   - Stream（流）
 - [`css那些事儿`](./bottom-learning/css那些事儿.md)
 - [`es6中元编程`](./bottom-learning/es6中元编程.md)
+- [`ts高级类型`](./bottom-learning/ts高级类型.md)
 
 ### 进阶
 - [函数式编程](advanced/函数式编程.md)
