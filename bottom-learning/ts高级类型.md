@@ -89,4 +89,84 @@ type Record<K extends keyof any, T> = {
     [P in K]: T;
 };
 ```
-看类型的定义就可以看出来，将K中的每个属性([P in K]),都转为T类型
+看类型的定义就可以看出来，将K中的每个属性([P in K]),都转为T类型, K可以是联合类型、对象、枚举…
+```ts
+type petsGroup = 'dog' | 'cat' | 'fish';
+
+type numOrStr = number | string;
+
+type IPets = Record<petsGroup, numOrStr>;
+
+// type IPets = {
+//     dog: numOrStr;
+//     cat: numOrStr;
+//     fish: numOrStr;
+// }
+```
+# Pick
+`Pick`译为挑选/选择, 作用是从一个复合类型中，取出几个想要的类型的组合一个新的类型
+### ts中的声明
+```ts
+/**
+ * From T, pick a set of properties whose keys are in the union K
+ */
+type Pick<T, K extends keyof T> = {
+  [P in K]: T[P];
+};
+```
+`K extends keyof T`的作用是约束K的key在T的key中，不能超出这个范围，否则会报错的
+#### `keyof`
+ - keyof 用于获取某种类型的所有键，其返回类型是联合类型
+```ts
+// keyof 用于获取某种类型的所有键，其返回类型是联合类型
+interface B {
+  id: number;
+  name: string;
+  age: number;
+}
+
+type B1 = keyof B;
+// type B1 = "id" | "name" | "age"
+```
+#### `extends`
+这里的extends并不是用来继承的， 而是用来限制类型
+```ts
+// 对象extends
+type T = {
+  id: number;
+  name: string;
+}
+
+type K = {
+  id: number;
+}
+type IType = K extends T ? K : T;
+// type IType = {
+//     id: number;
+//     name: string;
+// }
+// 此处 K extends T 限制K中必须有T的所有属性, 通俗点说就是T必须是K的子集
+
+
+// 联合类型extends
+type T = "id" | "name";
+type K = "id";
+type IType = K extends T ? K : T;
+// type IType = "id"
+// 此处限制为K必须包含于T，通俗点说就是K是T的子集
+```
+
+```ts
+interface B {
+  id: number;
+  name: string;
+  age: number;
+}
+
+type PickB = Pick<B, "id" | "name">;
+
+// type PickB = {
+//     id: number;
+//     name: string;
+// }
+```
