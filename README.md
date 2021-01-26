@@ -3,16 +3,11 @@
 > 验证你是否真正掌握一个知识的最好方法，就是看你能否用直白浅显的语言把复杂深奥的问题和知识讲清楚<p align="right">-- 费曼技巧「以教为学」</p> 
 
 ## 大纲
-### 思想学习
-- [`❤️基础算法（todo）`](./ideological-learning/基础算法.md)
-  - 算法的复杂度 
-  - 基础排序算法
+### 前端杂记
 - [`❤️前端中的设计模式`](./ideological-learning/前端中的设计模式.md)
   - 策略模式
   - 发布订阅者模式
   - 责任链模式（todo）
-
-### 底层基础学习
 - [`❤️前端基础知识积累`](./bottom-learning/基础知识.md)
   - 0.1+0.2 为什么不等于 0.3 
   - == 和 === 的区别
@@ -25,9 +20,6 @@
   - 预编译
 - [`js基础题`](./bottom-learning/js基础题.md)
 - [`js手撕系列`](./bottom-learning/js手撕系列.md)
-- [`flutter 异步编程`](./bottom-learning/flutter异步编程.md)
-  - 事件循环、Isolate
-  - Stream（流）
 - [`css那些事儿`](./bottom-learning/css那些事儿.md)
 - [`es6中元编程`](./bottom-learning/es6中元编程.md)
 - [`ts高级类型`](./bottom-learning/ts高级类型.md)
@@ -43,6 +35,9 @@
 ### Flutter
 - [flutter路由详解](flutter/路由详解.md)
 - [flutter安装包瘦身、加快启动速度](flutter/安装包瘦身、加快启动速度.md)
-
+- [flutter 异步编程](./bottom-learning/flutter异步编程.md)
+  - 事件循环、Isolate
+  - Stream（流）
+- [ios数字键盘解决方案](./flutter/ios数字键盘解决方案.md)
 ### 人生不止有技术
 - [理财](to-try-to-change-to-succeed/理财.md)
