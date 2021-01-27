@@ -22,7 +22,7 @@
 - [`js手撕系列`](./bottom-learning/js手撕系列.md)
 - [`css那些事儿`](./bottom-learning/css那些事儿.md)
 - [`es6中元编程`](./bottom-learning/es6中元编程.md)
-- [`ts高级类型`](./bottom-learning/ts高级类型.md)
+- [`ts高级特性`](./bottom-learning/ts高级特性.md)
 
 ### 进阶
 - [函数式编程](advanced/函数式编程.md)
