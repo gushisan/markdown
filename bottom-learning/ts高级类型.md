@@ -115,7 +115,7 @@ type Pick<T, K extends keyof T> = {
 };
 ```
 `K extends keyof T`的作用是约束K的key在T的key中，不能超出这个范围，否则会报错的
-#### `keyof`
+## `keyof`
  - keyof 用于获取某种类型的所有键，其返回类型是联合类型
 ```ts
 // keyof 用于获取某种类型的所有键，其返回类型是联合类型
@@ -128,7 +128,7 @@ interface B {
 type B1 = keyof B;
 // type B1 = "id" | "name" | "age"
 ```
-#### `extends`
+## `extends`
 这里的extends并不是用来继承的， 而是用来限制类型
 ```ts
 // 对象extends
@@ -155,7 +155,7 @@ type IType = K extends T ? K : T;
 // type IType = "id"
 // 此处限制为K必须包含于T，通俗点说就是K是T的子集
 ```
-
+使用`Pick`挑选属性组成新的类型
 ```ts
 interface B {
   id: number;
@@ -169,4 +169,78 @@ type PickB = Pick<B, "id" | "name">;
 //     id: number;
 //     name: string;
 // }
+```
+
+# ConstructorParameters
+`ConstructorParameters` 译为构造函数参数, 获取元组中构造函数类型的参数
+
+ts中的声明
+```ts
+/**
+ * Obtain the parameters of a constructor function type in a tuple
+ */
+type ConstructorParameters<T extends new (...args: any) => any> = T extends new (...args: infer P) => any ? P : never;
+
+```
+
+可以用来获取类的参数类型组成的元组类型
+```ts
+class People {
+  name: string
+  age: number
+
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
+
+type IType = ConstructorParameters<typeof People>
+// type IType = [name: string]
+
+```
+
+## `infer`
+表示在 extends 条件语句中待推断的类型变量
+```ts
+// 例子1
+// 若T是Array类型，则返回T的泛型，否则返回never类型
+type Union<T> = T extends Array<infer U> ? U: never
+
+type a = {
+  name: string
+}
+
+type b = string[]
+
+
+type c  = Union<b>
+// type c = string
+type d = Union<a>
+// type d = never
+
+
+// 例子2
+// 若T满足(param: infer P) => any，则返回函数入参的类型，否则直接返回T
+type ParamType<T> = T extends (param: infer P) => any ? P: T;
+ 
+interface IDog {
+    name: string;
+    age:number;
+}
+ 
+type Func = (dog:IDog) => void;
+ 
+type Param = ParamType<Func>; // IDog
+type TypeString = ParamType<string> //string
+```
+
+理解了`infer` 我们在回来看ts中`ConstructorParameters` 的声明
+```ts
+type ConstructorParameters<T extends new (...args: any) => any> = T extends new (...args: infer P) => any ? P : never;
+
+// T extends new (...args: any) => any 首先给T加了个约束 必须满足new (...args: any) => any
+
+// T extends new (...args: infer P) => any ? P : never
+// T若满足new (...args: any) => any 则返回所有入参的类型, 否则返回never
 ```
