@@ -9,10 +9,8 @@ class People {
   }
 }
 
-var a = typeof People;
 
-
-type IType = ConstructorParameters<typeof People>
+type IType = ConstructorParameters<typeof Object>
 
 type a = IConstructorParameters<typeof People>
 

@@ -239,7 +239,7 @@ type TypeString = ParamType<string> //string
 ```ts
 type ConstructorParameters<T extends new (...args: any) => any> = T extends new (...args: infer P) => any ? P : never;
 
-// T extends new (...args: any) => any 首先给T加了个约束 必须满足new (...args: any) => any
+// T extends new (...args: any) => any 首先给T加了个约束 必须满足new (...args: any) => any 也就是说T必须是构造函数类型
 
 // T extends new (...args: infer P) => any ? P : never
 // T若满足new (...args: any) => any 则返回所有入参的类型, 否则返回never
