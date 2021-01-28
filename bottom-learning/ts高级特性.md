@@ -246,7 +246,7 @@ type ConstructorParameters<T extends new (...args: any) => any> = T extends new 
 ```
 
 # Exclude
-`Exclude` 译为排除/不包括, `Exclude<T, U>` 表示从T中排除那些可分配给U的类型, 简单点说就是将 T 中某些属于 U 的类型移除掉。
+`Exclude` 译为排除/不包括, `Exclude<T, U>` 表示从T中排除那些可分配给U的类型, 简单点说就是将 T 中某些属于 U 的类型移除掉。也可理解为取补集
 
 ts中的声明
 ```ts
@@ -277,7 +277,7 @@ type T1 = Exclude<"a" | "b" | "c", "a" | "b" | 's'>
 ```
 
 # Extract
-`Extract` 译为提取,  `Extract<T, U>`从T中提取那些可分配给U的类型, 简单点说就是提取T中，U也有的元素
+`Extract` 译为提取,  `Extract<T, U>`从T中提取那些可分配给U的类型, 简单点说就是提取T中，U也有的元素，也可理解为取交集
 
 ts中的定义
 ```ts
