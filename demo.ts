@@ -1,18 +1,10 @@
-type IConstructorParameters<T> = T extends new (...args: infer P) => any ? P : never;
+// function isEqual <T extends object, K extends object>
+// (
+// obj1: T, 
+// obj2: K, 
+// fields: Array<Extract<keyof T, keyof K>>
+// ) {
+//   return fields.every((field) => obj1[field] != obj2[field]);
+// }
 
-class People {
-  name: string
-  age: number
-
-  constructor(name: string) {
-    this.name = name;
-  }
-}
-
-
-type IType = ConstructorParameters<typeof Object>
-
-type a = IConstructorParameters<typeof People>
-
-
-type d = new (...args: any) => any
+// isEqual({a: '1', b: '2'}, {a: '2'}, ['a'])

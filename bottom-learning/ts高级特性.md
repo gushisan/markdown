@@ -197,7 +197,7 @@ class People {
 
 type IType = ConstructorParameters<typeof People>
 // type IType = [name: string]
-
+// 注意这里typeof操作是取类型的作用
 ```
 
 ## `infer`
@@ -243,4 +243,63 @@ type ConstructorParameters<T extends new (...args: any) => any> = T extends new 
 
 // T extends new (...args: infer P) => any ? P : never
 // T若满足new (...args: any) => any 则返回所有入参的类型, 否则返回never
+```
+
+# Exclude
+`Exclude` 译为排除/不包括, `Exclude<T, U>` 表示从T中排除那些可分配给U的类型, 简单点说就是将 T 中某些属于 U 的类型移除掉。
+
+ts中的声明
+```ts
+/**
+ * Exclude from T those types that are assignable to U
+ */
+type Exclude<T, U> = T extends U ? never : T;
+```
+例
+```ts
+// 例子1
+type T = {
+  name: string
+  age: number
+}
+
+type U = {
+  name: string
+}
+
+type IType = Exclude<keyof T, keyof U>
+// type IType = "age"
+
+type T0 = Exclude<"a" | "b" | "c", "a" | "b">
+// type T0 = "c"
+type T1 = Exclude<"a" | "b" | "c", "a" | "b" | 's'>
+// type T1 = "c"
+```
+
+# Extract
+`Extract` 译为提取,  `Extract<T, U>`从T中提取那些可分配给U的类型, 简单点说就是提取T中，U也有的元素
+
+ts中的定义
+```ts
+/**
+ * Extract from T those types that are assignable to U
+ */
+type Extract<T, U> = T extends U ? T : never;
+```
+例
+```ts
+type T0 = Extract<"a" | "b" | "c", "a" | "f">
+// type T0 = "a"
+
+type T = {
+  name: string
+  age: number
+}
+
+type U = {
+  name: string
+}
+
+type IType = Extract<keyof T, keyof U>
+// type IType = "name"
 ```
