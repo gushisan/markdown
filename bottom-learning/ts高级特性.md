@@ -348,3 +348,38 @@ type example = NonNullable<string | number | undefined>
 // type example = string | number
 ```
 
+# Parameters & ReturnType
+- `Parameters` 用来获取函数参数的类型，
+
+
+ts中的定义
+```ts
+/**
+ * Obtain the parameters of a function type in a tuple
+ */
+type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
+
+/**
+ * Obtain the return type of a function type
+ */
+type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;
+```
+
+例
+```ts
+type IFoo = (
+  uname: string,
+  uage: number
+) => {
+  name: string;
+  age: number;
+};
+//参数类型
+type Ibar = Parameters<IFoo>;
+// type Ibar = [uname: string, uage: number]
+type T0 = ReturnType<IFoo>;
+// type T0 = {
+//     name: string;
+//     age: number;
+// }
+```
