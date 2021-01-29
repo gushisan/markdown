@@ -171,6 +171,65 @@ type PickB = Pick<B, "id" | "name">;
 // }
 ```
 
+# Exclude
+`Exclude` 译为排除/不包括, `Exclude<T, U>` 表示从T中排除那些可分配给U的类型, 简单点说就是将 T 中某些属于 U 的类型移除掉。也可理解为取补集
+
+ts中的声明
+```ts
+/**
+ * Exclude from T those types that are assignable to U
+ */
+type Exclude<T, U> = T extends U ? never : T;
+```
+例
+```ts
+// 例子1
+type T = {
+  name: string
+  age: number
+}
+
+type U = {
+  name: string
+}
+
+type IType = Exclude<keyof T, keyof U>
+// type IType = "age"
+
+type T0 = Exclude<"a" | "b" | "c", "a" | "b">
+// type T0 = "c"
+type T1 = Exclude<"a" | "b" | "c", "a" | "b" | 's'>
+// type T1 = "c"
+```
+
+# Extract
+`Extract` 译为提取,  `Extract<T, U>`从T中提取那些可分配给U的类型, 简单点说就是提取T中，U也有的元素，也可理解为取交集
+
+ts中的定义
+```ts
+/**
+ * Extract from T those types that are assignable to U
+ */
+type Extract<T, U> = T extends U ? T : never;
+```
+例
+```ts
+type T0 = Extract<"a" | "b" | "c", "a" | "f">
+// type T0 = "a"
+
+type T = {
+  name: string
+  age: number
+}
+
+type U = {
+  name: string
+}
+
+type IType = Extract<keyof T, keyof U>
+// type IType = "name"
+```
+
 # ConstructorParameters
 `ConstructorParameters` 译为构造函数参数, 获取元组中构造函数类型的参数
 
@@ -245,61 +304,47 @@ type ConstructorParameters<T extends new (...args: any) => any> = T extends new 
 // T若满足new (...args: any) => any 则返回所有入参的类型, 否则返回never
 ```
 
-# Exclude
-`Exclude` 译为排除/不包括, `Exclude<T, U>` 表示从T中排除那些可分配给U的类型, 简单点说就是将 T 中某些属于 U 的类型移除掉。也可理解为取补集
-
-ts中的声明
-```ts
-/**
- * Exclude from T those types that are assignable to U
- */
-type Exclude<T, U> = T extends U ? never : T;
-```
-例
-```ts
-// 例子1
-type T = {
-  name: string
-  age: number
-}
-
-type U = {
-  name: string
-}
-
-type IType = Exclude<keyof T, keyof U>
-// type IType = "age"
-
-type T0 = Exclude<"a" | "b" | "c", "a" | "b">
-// type T0 = "c"
-type T1 = Exclude<"a" | "b" | "c", "a" | "b" | 's'>
-// type T1 = "c"
-```
-
-# Extract
-`Extract` 译为提取,  `Extract<T, U>`从T中提取那些可分配给U的类型, 简单点说就是提取T中，U也有的元素，也可理解为取交集
+# InstanceType
+`InstanceType` 译为实例类型， 用来获取构造函数的返回类型
 
 ts中的定义
 ```ts
 /**
- * Extract from T those types that are assignable to U
+ * Obtain the return type of a constructor function type
  */
-type Extract<T, U> = T extends U ? T : never;
+type InstanceType<T extends new (...args: any) => any> = T extends new (...args: any) => infer R ? R : any;
 ```
 例
 ```ts
-type T0 = Extract<"a" | "b" | "c", "a" | "f">
-// type T0 = "a"
-
-type T = {
+class People {
   name: string
   age: number
+
+  constructor(name: string) {
+    this.name = name;
+  }
 }
 
-type U = {
-  name: string
-}
-
-type IType = Extract<keyof T, keyof U>
-// type IType = "name"
+type IType = InstanceType<typeof People>
+// type IType = People
+// 因为constructor默认返回this
+// constructor People(name: string): People
 ```
+
+# NonNullable
+`NonNullable` 译为不可为空， `NonNullable<T>`从T中排除null和undefined
+
+ts 中的定义
+```ts
+/**
+ * Exclude null and undefined from T
+ */
+type NonNullable<T> = T extends null | undefined ? never : T;
+
+```
+例
+```ts
+type example = NonNullable<string | number | undefined>
+// type example = string | number
+```
+
