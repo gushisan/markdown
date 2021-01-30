@@ -1,6 +1,7 @@
 # ts高级特性
-# Partial
-`Partial` 译为 部分的/局部的/不完全的, 作用是将一个接口的所有参数变为非必填
+# Partial & Required
+- `Partial` 译为 部分的/局部的/不完全的, 作用是将一个接口的所有参数变为非必填
+- `Required` 译为必须的, 作用是将一个接口中所有非必填参数 变为必填，`Required<T>` 的作用就是将某个类型里的属性全部变为必选项。
 ### ts中的声明
 ```ts
 /**
@@ -9,9 +10,16 @@
 type Partial<T> = {
   [P in keyof T]?: T[P];
 };
+
+/**
+ * Make all properties in T required
+ */
+type Required<T> = {
+    [P in keyof T]-?: T[P];
+};
 ```
 
-### 用法示例
+### Partial用法示例
 ```ts
 type Person = {
   name: string;
@@ -75,6 +83,23 @@ type DeepPartial<T> = {
 }
 
 // 现在针对那种特殊情况就能处理了
+```
+### Required 用法示例
+```ts
+interface User {
+  id: number;
+  age: number;
+}
+type PartialUser = Partial<User>;
+// type PartialUser = {
+//     id?: number;
+//     age?: number;
+// }
+type PickUser = Required<PartialUser>;
+// type PickUser = {
+//     id: number;
+//     age: number;
+// }
 ```
 
 # Record
@@ -349,7 +374,8 @@ type example = NonNullable<string | number | undefined>
 ```
 
 # Parameters & ReturnType
-- `Parameters` 用来获取函数参数的类型，
+- `Parameters` 用来获取函数参数的类型
+- `ReturnType` 用来获取函数返回值类型
 
 
 ts中的定义
@@ -364,6 +390,7 @@ type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) 
  */
 type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;
 ```
+定义时写的很明确，不过多赘述
 
 例
 ```ts
@@ -383,3 +410,52 @@ type T0 = ReturnType<IFoo>;
 //     age: number;
 // }
 ```
+
+# readonly & ReadonlyArray
+- `readonly`  只读 被`readonly` 标记的属性只能在声明时或类的构造函数中赋值，之后将不可改（即只读属性）。
+- `ReadonlyArray`  同理, 只读数组
+
+
+```ts
+interface ReadonlyArray<T> {
+    /** Iterator of values in the array. */
+    [Symbol.iterator](): IterableIterator<T>;
+
+    /**
+     * Returns an iterable of key, value pairs for every entry in the array
+     */
+    entries(): IterableIterator<[number, T]>;
+
+    /**
+     * Returns an iterable of keys in the array
+     */
+    keys(): IterableIterator<number>;
+
+    /**
+     * Returns an iterable of values in the array
+     */
+    values(): IterableIterator<T>;
+}
+```
+例
+```ts
+interface Person {
+  readonly id: number;
+}
+const data: Person = {
+  id: 456,
+};
+
+data.id = 789;
+// 无法分配到 "id" ，因为它是只读属性。ts(2540)
+
+const arr: number[] = [1, 2, 3, 4];
+
+let ro: ReadonlyArray<number> = arr;
+
+ro.push(444);
+// 类型“readonly number[]”上不存在属性“push”。ts(2339)
+```
+
+# 总结
+ts中有很多特性都可以在`lib.es5.ts`中去查看， 里面定义的接口和类型非常多，主要是理解ts定义的套路，就能举一反三
