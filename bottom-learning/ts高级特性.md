@@ -459,3 +459,13 @@ ro.push(444);
 
 # 总结
 ts中有很多特性都可以在`lib.es5.ts`中去查看， 里面定义的接口和类型非常多，主要是理解ts定义的套路，就能举一反三
+
+举个例子
+就比如Parameters的定义是
+type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
+理解他定义的意思，接受一个泛型T并且使用extends约束他必须是一个函数类型，如果是 返回函数参数的类型， 不是返回never。
+理解了这个，再稍微改造一下
+接受一个泛型T并且使用extends约束他必须是一个函数类型，如果是 返回函数返回值的类型， 不是返回never。
+这时就变成ReturnType的定义了
+理解了这些ts内置的定义规则，完全可以根据自己的需求自定义
+ts内置的这些类型或接口大都使用extends、infer、keyof、in... 这些组装而来
