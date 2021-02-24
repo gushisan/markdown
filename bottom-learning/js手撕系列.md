@@ -337,3 +337,141 @@ function add() {
 ```
 经典面试题：实现add(1)(2)(3)(4)=10; 、 add(1)(1,2,3)(2)=9;
 
+## 14.模拟new操作
+```js
+function newOperator(ctor, ...args) {
+  if (typeof ctor !== 'function') {
+    throw new TypeError('Type Error');
+  }
+  const obj = Object.create(ctor.prototype);
+  const res = ctor.apply(obj, args);
+
+  const isObject = typeof res === 'object' && res !== null;
+  const isFunction = typeof res === 'function';
+  return isObject || isFunction ? res : obj;
+}
+```
+- 以ctor.prototype为原型创建一个对象
+- 执行构造函数并将this绑定到新创建的对象上
+- 判断构造函数执行返回的结果是否是引用数据类型，若是则返回构造函数执行的结果，否则返回创建的对象
+
+## 15.instanceof
+instanceof运算符用于检测构造函数的prototype属性是否出现在某个实例对象的原型链上。
+
+
+```js
+const myInstanceof = (left, right) => {
+  // 基本数据类型都返回false
+  if (typeof left !== 'object' || left === null) return false;
+  let proto = Object.getPrototypeOf(left);
+  while (true) {
+    if (proto === null) return false;
+    if (proto === right.prototype) return true;
+    proto = Object.getPrototypeOf(proto);
+  }
+}
+```
+
+## 16.原型继承
+这里只写寄生组合继承了，中间还有几个演变过来的继承但都有一些缺陷
+```js
+function Parent() {
+  this.name = 'parent';
+}
+function Child() {
+  Parent.call(this);
+  this.type = 'children';
+}
+Child.prototype = Object.create(Parent.prototype);
+Child.prototype.constructor = Child;
+```
+
+## 17. Object.is
+Object.is解决的主要是这两个问题：
+```js
++0 === -0  // true
+NaN === NaN // false
+```
+
+```js
+const is= (x, y) => {
+  if (x === y) {
+    // +0和-0应该不相等
+    return x !== 0 || y !== 0 || 1/x === 1/y;
+  } else {
+    return x !== x && y !== y;
+  }
+}
+```
+
+## 18. Object.assign
+Object.assign()方法用于将所有可枚举属性的值从一个或多个源对象复制到目标对象。它将返回目标对象（请注意这个操作是浅拷贝）
+```js
+Object.defineProperty(Object, 'assign', {
+  value: function(target, ...args) {
+    if (target == null) {
+      return new TypeError('Cannot convert undefined or null to object');
+    }
+    
+    // 目标对象需要统一是引用数据类型，若不是会自动转换
+    const to = Object(target);
+
+    for (let i = 0; i < args.length; i++) {
+      // 每一个源对象
+      const nextSource = args[i];
+      if (nextSource !== null) {
+        // 使用for...in和hasOwnProperty双重判断，确保只拿到本身的属性、方法（不包含继承的）
+        for (const nextKey in nextSource) {
+          if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+            to[nextKey] = nextSource[nextKey];
+          }
+        }
+      }
+    }
+    return to;
+  },
+  // 不可枚举
+  enumerable: false,
+  writable: true,
+  configurable: true,
+})
+```
+
+## 19.深拷贝
+递归的完整版本（考虑到了Symbol属性）：
+
+```js
+const cloneDeep1 = (target, hash = new WeakMap()) => {
+  // 对于传入参数处理
+  if (typeof target !== 'object' || target === null) {
+    return target;
+  }
+  // 哈希表中存在直接返回
+  if (hash.has(target)) return hash.get(target);
+
+  const cloneTarget = Array.isArray(target) ? [] : {};
+  hash.set(target, cloneTarget);
+
+  // 针对Symbol属性
+  const symKeys = Object.getOwnPropertySymbols(target);
+  if (symKeys.length) {
+    symKeys.forEach(symKey => {
+      if (typeof target[symKey] === 'object' && target[symKey] !== null) {
+        cloneTarget[symKey] = cloneDeep1(target[symKey]);
+      } else {
+        cloneTarget[symKey] = target[symKey];
+      }
+    })
+  }
+
+  for (const i in target) {
+    if (Object.prototype.hasOwnProperty.call(target, i)) {
+      cloneTarget[i] =
+        typeof target[i] === 'object' && target[i] !== null
+        ? cloneDeep1(target[i], hash)
+        : target[i];
+    }
+  }
+  return cloneTarget;
+}
+```
