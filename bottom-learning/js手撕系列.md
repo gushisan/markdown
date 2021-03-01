@@ -475,3 +475,548 @@ const cloneDeep1 = (target, hash = new WeakMap()) => {
   return cloneTarget;
 }
 ```
+
+## 20. Promise
+参考: [Promise](https://juejin.cn/post/6860037916622913550)
+```js
+// 模拟实现Promise
+// Promise利用三大手段解决回调地狱：
+// 1. 回调函数延迟绑定
+// 2. 返回值穿透
+// 3. 错误冒泡
+
+// 定义三种状态
+const PENDING = 'PENDING';      // 进行中
+const FULFILLED = 'FULFILLED';  // 已成功
+const REJECTED = 'REJECTED';    // 已失败
+
+class Promise {
+  constructor(exector) {
+    // 初始化状态
+    this.status = PENDING;
+    // 将成功、失败结果放在this上，便于then、catch访问
+    this.value = undefined;
+    this.reason = undefined;
+    // 成功态回调函数队列
+    this.onFulfilledCallbacks = [];
+    // 失败态回调函数队列
+    this.onRejectedCallbacks = [];
+
+    const resolve = value => {
+      // 只有进行中状态才能更改状态
+      if (this.status === PENDING) {
+        this.status = FULFILLED;
+        this.value = value;
+        // 成功态函数依次执行
+        this.onFulfilledCallbacks.forEach(fn => fn(this.value));
+      }
+    }
+    const reject = reason => {
+      // 只有进行中状态才能更改状态
+      if (this.status === PENDING) {
+        this.status = REJECTED;
+        this.reason = reason;
+        // 失败态函数依次执行
+        this.onRejectedCallbacks.forEach(fn => fn(this.reason))
+      }
+    }
+    try {
+      // 立即执行executor
+      // 把内部的resolve和reject传入executor，用户可调用resolve和reject
+      exector(resolve, reject);
+    } catch(e) {
+      // executor执行出错，将错误内容reject抛出去
+      reject(e);
+    }
+  }
+  then(onFulfilled, onRejected) {
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : value => value;
+    onRejected = typeof onRejected === 'function'? onRejected :
+      reason => { throw new Error(reason instanceof Error ? reason.message : reason) }
+    // 保存this
+    const self = this;
+    return new Promise((resolve, reject) => {
+      if (self.status === PENDING) {
+        self.onFulfilledCallbacks.push(() => {
+          // try捕获错误
+          try {
+            // 模拟微任务
+            setTimeout(() => {
+              const result = onFulfilled(self.value);
+              // 分两种情况：
+              // 1. 回调函数返回值是Promise，执行then操作
+              // 2. 如果不是Promise，调用新Promise的resolve函数
+              result instanceof Promise ? result.then(resolve, reject) : resolve(result);
+            })
+          } catch(e) {
+            reject(e);
+          }
+        });
+        self.onRejectedCallbacks.push(() => {
+          // 以下同理
+          try {
+            setTimeout(() => {
+              const result = onRejected(self.reason);
+              // 不同点：此时是reject
+              result instanceof Promise ? result.then(resolve, reject) : resolve(result);
+            })
+          } catch(e) {
+            reject(e);
+          }
+        })
+      } else if (self.status === FULFILLED) {
+        try {
+          setTimeout(() => {
+            const result = onFulfilled(self.value);
+            result instanceof Promise ? result.then(resolve, reject) : resolve(result);
+          });
+        } catch(e) {
+          reject(e);
+        }
+      } else if (self.status === REJECTED) {
+        try {
+          setTimeout(() => {
+            const result = onRejected(self.reason);
+            result instanceof Promise ? result.then(resolve, reject) : resolve(result);
+          })
+        } catch(e) {
+          reject(e);
+        }
+      }
+    });
+  }
+  catch(onRejected) {
+    return this.then(null, onRejected);
+  }
+  static resolve(value) {
+    if (value instanceof Promise) {
+      // 如果是Promise实例，直接返回
+      return value;
+    } else {
+      // 如果不是Promise实例，返回一个新的Promise对象，状态为FULFILLED
+      return new Promise((resolve, reject) => resolve(value));
+    }
+  }
+  static reject(reason) {
+    return new Promise((resolve, reject) => {
+      reject(reason);
+    })
+  }
+  static all(promiseArr) {
+    const len = promiseArr.length;
+    const values = new Array(len);
+    // 记录已经成功执行的promise个数
+    let count = 0;
+    return new Promise((resolve, reject) => {
+      for (let i = 0; i < len; i++) {
+        // Promise.resolve()处理，确保每一个都是promise实例
+        Promise.resolve(promiseArr[i]).then(
+          val => {
+            values[i] = val;
+            count++;
+            // 如果全部执行完，返回promise的状态就可以改变了
+            if (count === len) resolve(values);
+          },
+          err => reject(err),
+        );
+      }
+    })
+  }
+  static race(promiseArr) {
+    return new Promise((resolve, reject) => {
+      promiseArr.forEach(p => {
+        Promise.resolve(p).then(
+          val => resolve(val),
+          err => reject(err),
+        )
+      })
+    })
+  }
+}
+```
+## 21. Promise.all
+Promise.all是支持链式调用的，本质上就是返回了一个Promise实例，通过resolve和reject来改变实例状态。
+```js
+Promise.myAll = function(promiseArr) {
+  return new Promise((resolve, reject) => {
+    const ans = [];
+    let index = 0;
+    for (let i = 0; i < promiseArr.length; i++) {
+      promiseArr[i]
+      .then(res => {
+        ans[i] = res;
+        index++;
+        if (index === promiseArr.length) {
+          resolve(ans);
+        }
+      })
+      .catch(err => reject(err));
+    }
+  })
+}
+```
+## 22.Promise.race
+```js
+Promise.race = function(promiseArr) {
+  return new Promise((resolve, reject) => {
+    promiseArr.forEach(p => {
+      // 如果不是Promise实例需要转化为Promise实例
+      Promise.resolve(p).then(
+        val => resolve(val),
+        err => reject(err),
+      )
+    })
+  })
+}
+```
+## 23. Promise并行限制
+参考: [Promise并行限制](https://juejin.cn/post/6854573217013563405)
+
+就是实现有并行限制的Promise调度器问题。
+
+```js
+class Scheduler {
+  constructor() {
+    this.queue = [];
+    this.maxCount = 2;
+    this.runCounts = 0;
+  }
+  add(promiseCreator) {
+    this.queue.push(promiseCreator);
+  }
+  taskStart() {
+    for (let i = 0; i < this.maxCount; i++) {
+      this.request();
+    }
+  }
+  request() {
+    if (!this.queue || !this.queue.length || this.runCounts >= this.maxCount) {
+      return;
+    }
+    this.runCounts++;
+
+    this.queue.shift()().then(() => {
+      this.runCounts--;
+      this.request();
+    });
+  }
+}
+   
+const timeout = time => new Promise(resolve => {
+  setTimeout(resolve, time);
+})
+  
+const scheduler = new Scheduler();
+
+const addTask = (time,order) => {
+  scheduler.add(() => timeout(time).then(()=>console.log(order)))
+}
+  
+  
+addTask(1000, '1');
+addTask(500, '2');
+addTask(300, '3');
+addTask(400, '4');
+scheduler.taskStart()
+// 2
+// 3
+// 1
+// 4
+```
+
+## 24. JSONP
+script标签不遵循同源协议，可以用来进行跨域请求，优点就是兼容性好但仅限于GET请求
+
+```js
+const jsonp = ({ url, params, callbackName }) => {
+  const generateUrl = () => {
+    let dataSrc = '';
+    for (let key in params) {
+      if (Object.prototype.hasOwnProperty.call(params, key)) {
+        dataSrc += `${key}=${params[key]}&`;
+      }
+    }
+    dataSrc += `callback=${callbackName}`;
+    return `${url}?${dataSrc}`;
+  }
+  return new Promise((resolve, reject) => {
+    const scriptEle = document.createElement('script');
+    scriptEle.src = generateUrl();
+    document.body.appendChild(scriptEle);
+    window[callbackName] = data => {
+      resolve(data);
+      document.removeChild(scriptEle);
+    }
+  })
+}
+```
+
+## 25. AJAX
+```js
+const getJSON = function(url) {
+  return new Promise((resolve, reject) => {
+    const xhr = XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Mscrosoft.XMLHttp');
+    xhr.open('GET', url, false);
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState !== 4) return;
+      if (xhr.status === 200 || xhr.status === 304) {
+        resolve(xhr.responseText);
+      } else {
+        reject(new Error(xhr.responseText));
+      }
+    }
+    xhr.send();
+  })
+}
+```
+
+## 26. event模块
+实现node中回调函数的机制，node中回调函数其实是内部使用了观察者模式。
+
+> 观察者模式：定义了对象间一种一对多的依赖关系，当目标对象Subject发生改变时，所有依赖它的对象Observer都会得到通知。
+
+```js
+function EventEmitter() {
+  this.events = new Map();
+}
+
+// 需要实现的一些方法：
+// addListener、removeListener、once、removeAllListeners、emit
+
+// 模拟实现addlistener方法
+const wrapCallback = (fn, once = false) => ({ callback: fn, once });
+EventEmitter.prototype.addListener = function(type, fn, once = false) {
+  const hanlder = this.events.get(type);
+  if (!hanlder) {
+    // 没有type绑定事件
+    this.events.set(type, wrapCallback(fn, once));
+  } else if (hanlder && typeof hanlder.callback === 'function') {
+    // 目前type事件只有一个回调
+    this.events.set(type, [hanlder, wrapCallback(fn, once)]);
+  } else {
+    // 目前type事件数>=2
+    hanlder.push(wrapCallback(fn, once));
+  }
+}
+// 模拟实现removeListener
+EventEmitter.prototype.removeListener = function(type, listener) {
+  const hanlder = this.events.get(type);
+  if (!hanlder) return;
+  if (!Array.isArray(this.events)) {
+    if (hanlder.callback === listener.callback) this.events.delete(type);
+    else return;
+  }
+  for (let i = 0; i < hanlder.length; i++) {
+    const item = hanlder[i];
+    if (item.callback === listener.callback) {
+      hanlder.splice(i, 1);
+      i--;
+      if (hanlder.length === 1) {
+        this.events.set(type, hanlder[0]);
+      }
+    }
+  }
+}
+// 模拟实现once方法
+EventEmitter.prototype.once = function(type, listener) {
+  this.addListener(type, listener, true);
+}
+// 模拟实现emit方法
+EventEmitter.prototype.emit = function(type, ...args) {
+  const hanlder = this.events.get(type);
+  if (!hanlder) return;
+  if (Array.isArray(hanlder)) {
+    hanlder.forEach(item => {
+      item.callback.apply(this, args);
+      if (item.once) {
+        this.removeListener(type, item);
+      }
+    })
+  } else {
+    hanlder.callback.apply(this, args);
+    if (hanlder.once) {
+      this.events.delete(type);
+    }
+  }
+  return true;
+}
+EventEmitter.prototype.removeAllListeners = function(type) {
+  const hanlder = this.events.get(type);
+  if (!hanlder) return;
+  this.events.delete(type);
+}
+```
+
+## 27. 图片懒加载
+可以给img标签统一自定义属性data-src='default.png'，当检测到图片出现在窗口之后再补充src属性，此时才会进行图片资源加载。
+
+```js
+function lazyload() {
+  const imgs = document.getElementsByTagName('img');
+  const len = imgs.length;
+  // 视口的高度
+  const viewHeight = document.documentElement.clientHeight;
+  // 滚动条高度
+  const scrollHeight = document.documentElement.scrollTop || document.body.scrollTop;
+  for (let i = 0; i < len; i++) {
+    const offsetHeight = imgs[i].offsetTop;
+    if (offsetHeight < viewHeight + scrollHeight) {
+      const src = imgs[i].dataset.src;
+      imgs[i].src = src;
+    }
+  }
+}
+
+// 可以使用节流优化一下
+window.addEventListener('scroll', lazyload);
+```
+
+## 28. 滚动加载
+原理就是监听页面滚动事件，分析clientHeight、scrollTop、scrollHeight三者的属性关系。
+
+```js
+window.addEventListener('scroll', function() {
+  const clientHeight = document.documentElement.clientHeight;
+  const scrollTop = document.documentElement.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight;
+  if (clientHeight + scrollTop >= scrollHeight) {
+    // 检测到滚动至页面底部，进行后续操作
+    // ...
+  }
+}, false);
+```
+
+## 29. 渲染几万条数据不卡住页面
+渲染大数据时，合理使用createDocumentFragment和requestAnimationFrame，将操作切分为一小段一小段执行。
+```js
+setTimeout(() => {
+  // 插入十万条数据
+  const total = 100000;
+  // 一次插入的数据
+  const once = 20;
+  // 插入数据需要的次数
+  const loopCount = Math.ceil(total / once);
+  let countOfRender = 0;
+  const ul = document.querySelector('ul');
+  // 添加数据的方法
+  function add() {
+    const fragment = document.createDocumentFragment();
+    for(let i = 0; i < once; i++) {
+      const li = document.createElement('li');
+      li.innerText = Math.floor(Math.random() * total);
+      fragment.appendChild(li);
+    }
+    ul.appendChild(fragment);
+    countOfRender += 1;
+    loop();
+  }
+  function loop() {
+    if(countOfRender < loopCount) {
+      window.requestAnimationFrame(add);
+    }
+  }
+  loop();
+}, 0)
+```
+
+## 30.打印出当前网页使用了多少种HTML元素
+```js
+const fn = () => {
+  return [...new Set([...document.querySelectorAll('*')].map(el => el.tagName))].length;
+}
+```
+DOM操作返回的是类数组，需要转换为数组之后才可以调用数组的方法
+
+## 31.将VirtualDom转化为真实DOM结构
+这是当前SPA应用的核心概念之一
+
+```js
+// vnode结构：
+// {
+//   tag,
+//   attrs,
+//   children,
+// }
+
+//Virtual DOM => DOM
+function render(vnode, container) {
+  container.appendChild(_render(vnode));
+}
+function _render(vnode) {
+  // 如果是数字类型转化为字符串
+  if (typeof vnode === 'number') {
+    vnode = String(vnode);
+  }
+  // 字符串类型直接就是文本节点
+  if (typeof vnode === 'string') {
+    return document.createTextNode(vnode);
+  }
+  // 普通DOM
+  const dom = document.createElement(vnode.tag);
+  if (vnode.attrs) {
+    // 遍历属性
+    Object.keys(vnode.attrs).forEach(key => {
+      const value = vnode.attrs[key];
+      dom.setAttribute(key, value);
+    })
+  }
+  // 子数组进行递归操作
+  vnode.children.forEach(child => render(child, dom));
+  return dom;
+}
+```
+
+## 32. 字符串解析问题
+```js
+var a = {
+	b: 123,
+	c: '456',
+	e: '789',
+}
+var str=`a{a.b}aa{a.c}aa {a.d}aaaa`;
+// => 'a123aa456aa {a.d}aaaa'
+```
+实现函数使得将str字符串中的{}内的变量替换，如果属性不存在保持原样（比如{a.d}）
+
+类似于模版字符串，但有一点出入，实际上原理大差不差
+
+```js
+const fn1 = (str, obj) => {
+	let res = '';
+    // 标志位，标志前面是否有{
+	let flag = false;
+	let start;
+	for (let i = 0; i < str.length; i++) {
+		if (str[i] === '{') {
+			flag = true;
+			start = i + 1;
+			continue;
+		}
+		if (!flag) res += str[i];
+		else {
+			if (str[i] === '}') {
+				flag = false;
+				res += match(str.slice(start, i), obj);
+			}
+		}
+	}
+	return res;
+}
+// 对象匹配操作
+const match = (str, obj) => {
+	const keys = str.split('.').slice(1);
+	let index = 0;
+	let o = obj;
+	while (index < keys.length) {
+		const key = keys[index];
+		if (!o[key]) {
+			return `{${str}}`;
+		} else {
+			o = o[key];
+		}
+		index++;
+	}
+	return o;
+}
+```
