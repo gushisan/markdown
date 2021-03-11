@@ -27,6 +27,7 @@
 ### 进阶
 - [函数式编程](advanced/函数式编程.md)
 - [前端领域驱动设计（DDD）demo](https://github.com/gushisan/xf-ts-ddd)
+- [前端性能初探-h5](advanced/前端性能初探-h5.md)
 ### 工作笔记
 - [百度地图换高德地图中遇到的坑](work-notes/百度地图换高德中遇到的坑.md)
 - [复习正则](work-notes/正则.md)
